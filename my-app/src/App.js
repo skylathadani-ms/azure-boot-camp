@@ -9,14 +9,20 @@ function App() {
   useEffect(() => {
     const fetchArticles = async () => {
       const response = await axios.get(
-        `https://newsapi.org/v2/everything?q=microsoft%20finance&apiKey=7e725d089e1344659ed123634947279d&pageSize=10`
+        `https://api.newscatcherapi.com/v2/search?q=microsoft finance&page=1`,
+        {
+          headers: {
+            'x-api-key': 'yh47a1ZE9lO7_OhWD2u7hcl4LjwaPcEmIiObFinWtC0'
+          }
+        }
       );
       const articlesWithSentiment = response.data.articles.map((article) => {
-        const sentimentResult = sentiment(article.description || '');
+        const sentimentResult = sentiment(article.summary || '');
         const score = sentimentResult && sentimentResult.score;
         const sentimentScore = score ? Math.round((score + 5) / 10 * 100) : null;
-        const color = sentimentScore && sentimentScore > 50 ? 'green' : 'inherit';
-        return { ...article, sentimentScore, color };
+        const titleColor = sentimentScore && sentimentScore > 50 ? 'green' : 'inherit';
+        const summaryColor = sentimentScore && sentimentScore > 50 ? 'green' : 'inherit';
+        return { ...article, sentimentScore, titleColor, summaryColor };
       });
       setArticles(articlesWithSentiment);
     };
@@ -28,13 +34,13 @@ function App() {
     <div className="container">
       <h1>Microsoft Finance News</h1>
       {articles.map((article) => (
-        <div key={article.url} className="article" style={{ color: article.color }}>
-          <h2>{article.title}</h2>
-          <p>{article.description}</p>
+        <div key={article.link} className="article">
+          <h2 style={{ color: article.titleColor }}>{article.title}</h2>
+          <p style={{ color: article.summaryColor }}>{article.summary}</p>
           {article.sentimentScore && (
             <p>Sentiment Score: {article.sentimentScore}%</p>
           )}
-          <a href={article.url}>Read More</a>
+          <a href={article.link}>Read More</a>
         </div>
       ))}
     </div>
@@ -42,7 +48,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
