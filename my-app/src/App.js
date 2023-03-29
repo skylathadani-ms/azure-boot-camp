@@ -4,7 +4,9 @@ import axios from 'axios';
 const BASE_URL = 'https://finance.yahoo.com';
 
 const searchArticles = async (query) => {
-  const response = await axios.get(`${BASE_URL}/search`, {
+  const response = await axios.get(`${BASE_URL}/search`, {headers: {
+    'Access-Control-Allow-Origin': '*',
+  }},{
     params: {
       q: query,
     },
